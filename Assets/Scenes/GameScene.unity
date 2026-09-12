@@ -429,13 +429,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.46749914, y: -0, z: -0, w: 0.8839935}
-  m_LocalPosition: {x: 0, y: 9.58, z: -14.62}
+  m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
+  m_LocalPosition: {x: 0, y: 12.23, z: -15.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 55.744, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -607,6 +607,37 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &606608172
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 606608173}
+  m_Layer: 0
+  m_Name: HoldPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &606608173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606608172}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.85}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1881190589}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &721221498
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,6 +840,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &860215899
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4818551000083369444, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_InScenePlaced
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4818551000083369444, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3532091045
+      objectReference: {fileID: 0}
+    - target: {fileID: 4818551000083369444, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 1435520777
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8576237098325257101, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 606608173}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8576237098325257101, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1881190590}
+  m_SourcePrefab: {fileID: 100100000, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
 --- !u!1 &875751789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1078,6 +1184,7 @@ GameObject:
   - component: {fileID: 1178527979}
   - component: {fileID: 1178527978}
   - component: {fileID: 1178527977}
+  - component: {fileID: 1178527981}
   m_Layer: 0
   m_Name: CheesePizza
   m_TagString: Untagged
@@ -1177,9 +1284,26 @@ Transform:
   m_LocalPosition: {x: 1.2547799, y: 0.97999996, z: -7.54494}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1655393603}
   m_Father: {fileID: 1082848789}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1178527981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178527976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3af7e65418646d40bc0758768132035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PizzaSpawner
+  pizzaPrefab: {fileID: 6689467495087920124, guid: 3c24a16f82212fc469959b2fc1a5078d, type: 3}
+  spawnPoint: {fileID: 1655393603}
+  pizzaType: 1
+  respawnDelay: 3
 --- !u!1 &1201460772
 GameObject:
   m_ObjectHideFlags: 0
@@ -1628,6 +1752,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 721221499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1655393602
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1655393603}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1655393603
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1655393602}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 3.19}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1178527980}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1657069194
 GameObject:
   m_ObjectHideFlags: 0
@@ -1852,6 +2007,61 @@ Transform:
   m_Children: []
   m_Father: {fileID: 721221499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1881190581 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8576237098325257101, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+  m_PrefabInstance: {fileID: 860215899}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1881190589 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5404307754780842009, guid: cc543e0f6bc368443b07b4f33ffbe995, type: 3}
+  m_PrefabInstance: {fileID: 860215899}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1881190590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881190581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5eca255fb451f441bd241d14b9de1c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
+  interactDistance: 1
+  holdPoint: {fileID: 606608173}
+--- !u!1 &2064085690
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2064085691}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2064085691
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064085690}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 3.35}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2124305641}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2124305637
 GameObject:
   m_ObjectHideFlags: 0
@@ -1864,6 +2074,7 @@ GameObject:
   - component: {fileID: 2124305640}
   - component: {fileID: 2124305639}
   - component: {fileID: 2124305638}
+  - component: {fileID: 2124305642}
   m_Layer: 0
   m_Name: PepperoniPizza
   m_TagString: Untagged
@@ -1963,9 +2174,26 @@ Transform:
   m_LocalPosition: {x: -5.03522, y: 0.97999996, z: -7.54494}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2064085691}
   m_Father: {fileID: 1082848789}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2124305642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124305637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3af7e65418646d40bc0758768132035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PizzaSpawner
+  pizzaPrefab: {fileID: 6689467495087920124, guid: f0d1a8774cfdbfa4b9d33b2e3ecef52e, type: 3}
+  spawnPoint: {fileID: 2064085691}
+  pizzaType: 0
+  respawnDelay: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1976,3 +2204,4 @@ SceneRoots:
   - {fileID: 1268653313}
   - {fileID: 721221499}
   - {fileID: 1082848789}
+  - {fileID: 860215899}
