@@ -13,14 +13,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
-        // Ambil pizza
         if (Keyboard.current != null &&
             Keyboard.current.eKey.wasPressedThisFrame)
         {
-            TryPickupPizza();
+            HandleInteraction();
         }
 
-        // Jatuhkan pizza
         if (Keyboard.current != null &&
             Keyboard.current.qKey.wasPressedThisFrame)
         {
@@ -28,16 +26,24 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    private void TryPickupPizza()
+    private void HandleInteraction()
     {
-        // Kalau sudah membawa pizza, jangan ambil lagi
+        // Jika sedang membawa pizza,
+        // E digunakan untuk memberikan pizza ke customer.
         if (heldPizza != null)
         {
-            Debug.Log("Player sudah membawa pizza.");
-            return;
+            TryServeCustomer();
         }
+        else
+        {
+            // Jika tidak membawa pizza,
+            // E digunakan untuk mengambil pizza.
+            TryPickupPizza();
+        }
+    }
 
-        // Cari semua Collider di sekitar Player
+    private void TryPickupPizza()
+    {
         Collider[] colliders = Physics.OverlapSphere(
             transform.position,
             interactDistance
@@ -65,14 +71,12 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
-        // Tidak ada pizza di sekitar Player
         if (closestPizza == null)
         {
             Debug.Log("Tidak ada pizza di dekat Player.");
             return;
         }
 
-        // Ambil pizza terdekat
         heldPizza = closestPizza;
 
         heldPizza.PickUp(holdPoint);
@@ -83,6 +87,54 @@ public class PlayerInteraction : MonoBehaviour
         );
     }
 
+    private void TryServeCustomer()
+    {
+        Collider[] colliders = Physics.OverlapSphere(
+            transform.position,
+            interactDistance
+        );
+
+        Customer closestCustomer = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Collider col in colliders)
+        {
+            Customer customer =
+                col.GetComponentInParent<Customer>();
+
+            if (customer == null)
+                continue;
+
+            float distance = Vector3.Distance(
+                transform.position,
+                customer.transform.position
+            );
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestCustomer = customer;
+            }
+        }
+
+        if (closestCustomer == null)
+        {
+            Debug.Log("Tidak ada Customer di dekat Player.");
+            return;
+        }
+
+        Pizza pizzaToServe = heldPizza;
+
+        bool success = closestCustomer.ReceivePizza(
+            pizzaToServe
+        );
+
+        if (success)
+        {
+            heldPizza = null;
+        }
+    }
+
     private void TryDropPizza()
     {
         if (heldPizza == null)
@@ -91,11 +143,13 @@ public class PlayerInteraction : MonoBehaviour
             return;
         }
 
-        heldPizza.Drop();
+        Pizza pizzaToDrop = heldPizza;
+
+        pizzaToDrop.Drop();
 
         Debug.Log(
             "Pizza dijatuhkan: " +
-            heldPizza.pizzaType
+            pizzaToDrop.pizzaType
         );
 
         heldPizza = null;

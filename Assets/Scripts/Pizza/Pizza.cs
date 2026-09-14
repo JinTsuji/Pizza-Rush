@@ -13,6 +13,12 @@ public class Pizza : MonoBehaviour
 
     public void PickUp(Transform holdPoint)
     {
+        if (holdPoint == null)
+        {
+            Debug.LogError("Hold Point belum diatur!");
+            return;
+        }
+
         transform.SetParent(holdPoint);
 
         transform.localPosition = Vector3.zero;
@@ -23,6 +29,8 @@ public class Pizza : MonoBehaviour
         if (rb != null)
         {
             rb.isKinematic = true;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
 
         Collider col = GetComponent<Collider>();
@@ -32,7 +40,6 @@ public class Pizza : MonoBehaviour
             col.enabled = false;
         }
 
-        // Memberitahu spawner bahwa pizza sudah diambil
         if (spawner != null)
         {
             spawner.PizzaTaken();
@@ -56,5 +63,20 @@ public class Pizza : MonoBehaviour
         {
             col.enabled = true;
         }
+
+        if (spawner != null)
+        {
+            spawner.PizzaDropped(gameObject);
+        }
+    }
+
+    public void Serve()
+    {
+        if (spawner != null)
+        {
+            spawner.PizzaServed();
+        }
+
+        Destroy(gameObject);
     }
 }

@@ -2,15 +2,12 @@ using UnityEngine;
 
 public class PizzaSpawner : MonoBehaviour
 {
+    [Header("Pizza")]
     [SerializeField] private GameObject pizzaPrefab;
     [SerializeField] private Transform spawnPoint;
-
     [SerializeField] private PizzaType pizzaType;
 
-    [SerializeField] private float respawnDelay = 3f;
-
     private GameObject currentPizza;
-    private bool isRespawning;
 
     private void Start()
     {
@@ -22,8 +19,17 @@ public class PizzaSpawner : MonoBehaviour
         if (currentPizza != null)
             return;
 
-        if (isRespawning)
+        if (pizzaPrefab == null)
+        {
+            Debug.LogError("Pizza Prefab belum diisi!");
             return;
+        }
+
+        if (spawnPoint == null)
+        {
+            Debug.LogError("Spawn Point belum diisi!");
+            return;
+        }
 
         currentPizza = Instantiate(
             pizzaPrefab,
@@ -42,30 +48,27 @@ public class PizzaSpawner : MonoBehaviour
 
     public void PizzaTaken()
     {
-        // Station sekarang kosong
+        // Pizza sedang dibawa Player.
+        // Jangan spawn pizza baru dulu.
         currentPizza = null;
-
-        // Mulai timer respawn
-        if (!isRespawning)
-        {
-            StartCoroutine(RespawnPizza());
-        }
-    }
-
-    private System.Collections.IEnumerator RespawnPizza()
-    {
-        isRespawning = true;
-
-        yield return new WaitForSeconds(respawnDelay);
-
-        SpawnPizza();
-
-        isRespawning = false;
     }
 
     public void PizzaDropped(GameObject pizza)
     {
-        // Pizza yang dijatuhkan kembali menjadi pizza aktif.
+        // Pizza yang dijatuhkan menjadi pizza aktif lagi.
         currentPizza = pizza;
+    }
+
+    public void PizzaServed()
+    {
+        // Pizza sudah diberikan kepada Customer.
+        // Langsung buat pizza baru di spawn point.
+        currentPizza = null;
+
+        SpawnPizza();
+
+        Debug.Log(
+            pizzaType + " Pizza muncul kembali di Pizza Spawner."
+        );
     }
 }
