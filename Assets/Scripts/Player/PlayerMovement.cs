@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode; // 1. Tambahkan library Netcode
 
-public class PlayerMovement3D : MonoBehaviour
+// 2. Ubah MonoBehaviour menjadi NetworkBehaviour
+public class PlayerMovement3D : NetworkBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 5f;
@@ -18,6 +20,9 @@ public class PlayerMovement3D : MonoBehaviour
 
     void Update()
     {
+        // 3. Kunci Player Sync: Cek apakah komputer ini adalah pemilik kubus tersebut
+        if (!IsOwner) return;
+
         Move();
     }
 
