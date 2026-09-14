@@ -46,11 +46,19 @@ public class PizzaSpawner : MonoBehaviour
         }
     }
 
-    public void PizzaTaken()
+     public void PizzaTaken()
     {
-        // Pizza sedang dibawa Player.
-        // Jangan spawn pizza baru dulu.
+        // Pizza lama sedang dibawa Player,
+        // sehingga slot Spawner dianggap kosong.
         currentPizza = null;
+
+        // Langsung spawn pizza baru.
+        SpawnPizza();
+
+        Debug.Log(
+            pizzaType + " Pizza diambil. " +
+            "Pizza baru langsung muncul di Spawner."
+        );
     }
 
     public void PizzaDropped(GameObject pizza)
@@ -61,14 +69,13 @@ public class PizzaSpawner : MonoBehaviour
 
     public void PizzaServed()
     {
-        // Pizza sudah diberikan kepada Customer.
-        // Langsung buat pizza baru di spawn point.
+        // Pizza yang diberikan kepada Customer sudah selesai.
+        // Tidak perlu spawn lagi karena pizza baru
+        // sudah dibuat ketika pizza sebelumnya diambil.
         currentPizza = null;
 
-        SpawnPizza();
-
         Debug.Log(
-            pizzaType + " Pizza muncul kembali di Pizza Spawner."
+            pizzaType + " Pizza berhasil diberikan ke Customer."
         );
     }
 }
