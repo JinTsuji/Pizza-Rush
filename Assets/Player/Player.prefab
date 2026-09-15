@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4294058672630694276}
   - component: {fileID: 4818551000083369444}
   - component: {fileID: 767209910469550815}
-  - component: {fileID: 8321030721045532016}
+  - component: {fileID: 1981716241977097169}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -185,7 +185,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 5
   rotationSpeed: 10
---- !u!114 &8321030721045532016
+--- !u!114 &1981716241977097169
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -194,9 +194,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8576237098325257101}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: c252f4df60e609d46be1a1ee25a7b4b5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  m_EditorClassIdentifier: Assembly-CSharp::ClientNetworkTransform
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkTransformExpanded: 0
   AutoOwnerAuthorityTickOffset: 1
