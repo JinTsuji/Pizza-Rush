@@ -1,6 +1,7 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class PizzaSpawner : MonoBehaviour
+public class PizzaSpawner : NetworkBehaviour
 {
     [Header("Pizza")]
     [SerializeField] private GameObject pizzaPrefab;
@@ -11,11 +12,19 @@ public class PizzaSpawner : MonoBehaviour
 
     private void Start()
     {
+        // Hanya Server yang boleh melakukan spawn
+        if (!IsServer)
+            return;
+
         SpawnPizza();
     }
 
     public void SpawnPizza()
     {
+        // Hanya Server yang boleh spawn NetworkObject
+        if (!IsServer)
+            return;
+
         if (currentPizza != null)
             return;
 
@@ -31,12 +40,14 @@ public class PizzaSpawner : MonoBehaviour
             return;
         }
 
+        // Spawn pizza secara normal
         currentPizza = Instantiate(
             pizzaPrefab,
             spawnPoint.position,
             spawnPoint.rotation
         );
 
+        // Ambil komponen Pizza
         Pizza pizza = currentPizza.GetComponent<Pizza>();
 
         if (pizza != null)
@@ -44,38 +55,74 @@ public class PizzaSpawner : MonoBehaviour
             pizza.pizzaType = pizzaType;
             pizza.SetSpawner(this);
         }
+
+        // Ambil NetworkObject
+        NetworkObject networkObject =
+            currentPizza.GetComponent<NetworkObject>();
+
+        if (networkObject == null)
+        {
+            Debug.LogError(
+                "Pizza Prefab tidak memiliki NetworkObject!"
+            );
+
+            Destroy(currentPizza);
+            currentPizza = null;
+            return;
+        }
+
+        // Spawn ke semua client
+        networkObject.Spawn();
+
+        Debug.Log(
+            pizzaType +
+            " Pizza berhasil di-spawn oleh Server."
+        );
     }
 
-     public void PizzaTaken()
+    public void PizzaTaken()
     {
-        // Pizza lama sedang dibawa Player,
-        // sehingga slot Spawner dianggap kosong.
+        // Hanya Server yang mengatur spawn
+        if (!IsServer)
+            return;
+
+        // Pizza lama sekarang dibawa Player
         currentPizza = null;
 
-        // Langsung spawn pizza baru.
+        // Langsung spawn pizza baru
         SpawnPizza();
 
         Debug.Log(
-            pizzaType + " Pizza diambil. " +
-            "Pizza baru langsung muncul di Spawner."
+            pizzaType +
+            " Pizza diambil. Pizza baru langsung muncul."
         );
     }
 
     public void PizzaDropped(GameObject pizza)
     {
-        // Pizza yang dijatuhkan menjadi pizza aktif lagi.
+        if (!IsServer)
+            return;
+
+        // Pizza yang dijatuhkan menjadi pizza aktif
         currentPizza = pizza;
+
+        Debug.Log(
+            pizzaType +
+            " Pizza dijatuhkan dan kembali menjadi pizza aktif."
+        );
     }
 
     public void PizzaServed()
     {
-        // Pizza yang diberikan kepada Customer sudah selesai.
-        // Tidak perlu spawn lagi karena pizza baru
-        // sudah dibuat ketika pizza sebelumnya diambil.
+        if (!IsServer)
+            return;
+
+        // Pizza yang diberikan ke Customer sudah selesai
         currentPizza = null;
 
         Debug.Log(
-            pizzaType + " Pizza berhasil diberikan ke Customer."
+            pizzaType +
+            " Pizza berhasil diberikan ke Customer."
         );
     }
 }

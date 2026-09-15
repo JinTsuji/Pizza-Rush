@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class PlayerInteraction : MonoBehaviour
+public class PlayerInteraction : NetworkBehaviour
 {
     [Header("Interaction")]
     [SerializeField] private float interactDistance = 2f;
@@ -13,6 +14,9 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
+        if (!IsOwner)
+        return;
+        
         if (Keyboard.current != null &&
             Keyboard.current.eKey.wasPressedThisFrame)
         {
