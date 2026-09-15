@@ -10,21 +10,41 @@ public class PlayerInteraction : NetworkBehaviour
     [Header("Pizza")]
     [SerializeField] private Transform holdPoint;
 
+    private NetworkVariable<ulong> heldPizzaId =
+        new NetworkVariable<ulong>(
+            ulong.MaxValue,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
     private Pizza heldPizza;
+
+    public override void OnNetworkSpawn()
+    {
+        heldPizzaId.OnValueChanged += OnHeldPizzaChanged;
+
+        UpdateHeldPizzaReference(heldPizzaId.Value);
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        heldPizzaId.OnValueChanged -= OnHeldPizzaChanged;
+    }
 
     private void Update()
     {
         if (!IsOwner)
-        return;
-        
-        if (Keyboard.current != null &&
-            Keyboard.current.eKey.wasPressedThisFrame)
+            return;
+
+        if (Keyboard.current == null)
+            return;
+
+        if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             HandleInteraction();
         }
 
-        if (Keyboard.current != null &&
-            Keyboard.current.qKey.wasPressedThisFrame)
+        if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             TryDropPizza();
         }
@@ -32,16 +52,18 @@ public class PlayerInteraction : NetworkBehaviour
 
     private void HandleInteraction()
     {
-        // Jika sedang membawa pizza,
-        // E digunakan untuk memberikan pizza ke customer.
         if (heldPizza != null)
         {
-            TryServeCustomer();
+            Debug.Log(
+                "Player membawa " +
+                heldPizza.pizzaType
+            );
+
+            // Untuk sementara kita hanya test pickup.
+            // Serve Customer akan kita aktifkan setelah pickup berhasil.
         }
         else
         {
-            // Jika tidak membawa pizza,
-            // E digunakan untuk mengambil pizza.
             TryPickupPizza();
         }
     }
@@ -58,7 +80,8 @@ public class PlayerInteraction : NetworkBehaviour
 
         foreach (Collider col in colliders)
         {
-            Pizza pizza = col.GetComponentInParent<Pizza>();
+            Pizza pizza =
+                col.GetComponentInParent<Pizza>();
 
             if (pizza == null)
                 continue;
@@ -77,65 +100,113 @@ public class PlayerInteraction : NetworkBehaviour
 
         if (closestPizza == null)
         {
-            Debug.Log("Tidak ada pizza di dekat Player.");
+            Debug.Log(
+                "Tidak ada Pizza di dekat Player."
+            );
+
             return;
         }
 
-        heldPizza = closestPizza;
-
-        heldPizza.PickUp(holdPoint);
-
         Debug.Log(
-            "Pizza berhasil diambil: " +
-            heldPizza.pizzaType
+            "Meminta Server mengambil Pizza: " +
+            closestPizza.pizzaType
+        );
+
+        RequestPickupPizzaRpc(
+            closestPizza.NetworkObject.NetworkObjectId
         );
     }
 
-    private void TryServeCustomer()
+    [Rpc(SendTo.Server)]
+    private void RequestPickupPizzaRpc(
+        ulong pizzaNetworkObjectId
+    )
     {
-        Collider[] colliders = Physics.OverlapSphere(
-            transform.position,
-            interactDistance
-        );
-
-        Customer closestCustomer = null;
-        float closestDistance = Mathf.Infinity;
-
-        foreach (Collider col in colliders)
+        if (heldPizzaId.Value != ulong.MaxValue)
         {
-            Customer customer =
-                col.GetComponentInParent<Customer>();
-
-            if (customer == null)
-                continue;
-
-            float distance = Vector3.Distance(
-                transform.position,
-                customer.transform.position
-            );
-
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestCustomer = customer;
-            }
-        }
-
-        if (closestCustomer == null)
-        {
-            Debug.Log("Tidak ada Customer di dekat Player.");
             return;
         }
 
-        Pizza pizzaToServe = heldPizza;
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(
+                pizzaNetworkObjectId,
+                out NetworkObject networkObject))
+        {
+            Debug.LogWarning(
+                "Pizza tidak ditemukan oleh Server."
+            );
 
-        bool success = closestCustomer.ReceivePizza(
-            pizzaToServe
+            return;
+        }
+
+        Pizza pizza =
+            networkObject.GetComponent<Pizza>();
+
+        if (pizza == null)
+            return;
+
+        float distance = Vector3.Distance(
+            transform.position,
+            pizza.transform.position
         );
 
-        if (success)
+        if (distance > interactDistance)
+        {
+            Debug.LogWarning(
+                "Player terlalu jauh dari Pizza."
+            );
+
+            return;
+        }
+
+        // Server mengambil Pizza
+        bool success = pizza.PickUpServer(holdPoint);
+
+        if (!success)
+        {
+            Debug.LogWarning(
+                "Pickup Pizza gagal."
+            );
+
+            return;
+        }
+
+        // Simpan ID Pizza
+        heldPizzaId.Value =
+            pizza.NetworkObject.NetworkObjectId;
+
+        Debug.Log(
+            "Server menerima pickup: " +
+            pizza.pizzaType
+        );
+    }
+
+    private void OnHeldPizzaChanged(
+        ulong previousValue,
+        ulong newValue
+    )
+    {
+        UpdateHeldPizzaReference(newValue);
+    }
+
+    private void UpdateHeldPizzaReference(
+        ulong networkObjectId
+    )
+    {
+        if (networkObjectId == ulong.MaxValue)
         {
             heldPizza = null;
+            return;
+        }
+
+        if (NetworkManager.Singleton == null)
+            return;
+
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(
+                networkObjectId,
+                out NetworkObject networkObject))
+        {
+            heldPizza =
+                networkObject.GetComponent<Pizza>();
         }
     }
 
@@ -143,20 +214,50 @@ public class PlayerInteraction : NetworkBehaviour
     {
         if (heldPizza == null)
         {
-            Debug.Log("Player tidak sedang membawa pizza.");
+            Debug.Log(
+                "Player tidak membawa Pizza."
+            );
+
             return;
         }
 
-        Pizza pizzaToDrop = heldPizza;
+        RequestDropPizzaRpc(
+            heldPizza.NetworkObject.NetworkObjectId
+        );
+    }
 
-        pizzaToDrop.Drop();
+    [Rpc(SendTo.Server)]
+    private void RequestDropPizzaRpc(
+        ulong pizzaNetworkObjectId
+    )
+    {
+        if (heldPizzaId.Value != pizzaNetworkObjectId)
+            return;
+
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(
+                pizzaNetworkObjectId,
+                out NetworkObject networkObject))
+        {
+            return;
+        }
+
+        Pizza pizza =
+            networkObject.GetComponent<Pizza>();
+
+        if (pizza == null)
+            return;
+
+        Vector3 dropPosition =
+            transform.position +
+            transform.forward;
+
+        pizza.DropServer(dropPosition);
+
+        heldPizzaId.Value = ulong.MaxValue;
 
         Debug.Log(
-            "Pizza dijatuhkan: " +
-            pizzaToDrop.pizzaType
+            "Pizza berhasil dijatuhkan."
         );
-
-        heldPizza = null;
     }
 
     private void OnDrawGizmosSelected()

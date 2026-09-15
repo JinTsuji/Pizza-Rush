@@ -10,9 +10,8 @@ public class PizzaSpawner : NetworkBehaviour
 
     private GameObject currentPizza;
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        // Hanya Server yang boleh melakukan spawn
         if (!IsServer)
             return;
 
@@ -21,7 +20,6 @@ public class PizzaSpawner : NetworkBehaviour
 
     public void SpawnPizza()
     {
-        // Hanya Server yang boleh spawn NetworkObject
         if (!IsServer)
             return;
 
@@ -40,23 +38,28 @@ public class PizzaSpawner : NetworkBehaviour
             return;
         }
 
-        // Spawn pizza secara normal
         currentPizza = Instantiate(
             pizzaPrefab,
             spawnPoint.position,
             spawnPoint.rotation
         );
 
-        // Ambil komponen Pizza
         Pizza pizza = currentPizza.GetComponent<Pizza>();
 
-        if (pizza != null)
+        if (pizza == null)
         {
-            pizza.pizzaType = pizzaType;
-            pizza.SetSpawner(this);
+            Debug.LogError(
+                "Pizza Prefab tidak memiliki script Pizza!"
+            );
+
+            Destroy(currentPizza);
+            currentPizza = null;
+            return;
         }
 
-        // Ambil NetworkObject
+        pizza.pizzaType = pizzaType;
+        pizza.SetSpawner(this);
+
         NetworkObject networkObject =
             currentPizza.GetComponent<NetworkObject>();
 
@@ -71,7 +74,6 @@ public class PizzaSpawner : NetworkBehaviour
             return;
         }
 
-        // Spawn ke semua client
         networkObject.Spawn();
 
         Debug.Log(
@@ -82,14 +84,12 @@ public class PizzaSpawner : NetworkBehaviour
 
     public void PizzaTaken()
     {
-        // Hanya Server yang mengatur spawn
         if (!IsServer)
             return;
 
-        // Pizza lama sekarang dibawa Player
         currentPizza = null;
 
-        // Langsung spawn pizza baru
+        // Langsung buat pizza pengganti
         SpawnPizza();
 
         Debug.Log(
@@ -103,12 +103,11 @@ public class PizzaSpawner : NetworkBehaviour
         if (!IsServer)
             return;
 
-        // Pizza yang dijatuhkan menjadi pizza aktif
         currentPizza = pizza;
 
         Debug.Log(
             pizzaType +
-            " Pizza dijatuhkan dan kembali menjadi pizza aktif."
+            " Pizza dijatuhkan."
         );
     }
 
@@ -117,12 +116,6 @@ public class PizzaSpawner : NetworkBehaviour
         if (!IsServer)
             return;
 
-        // Pizza yang diberikan ke Customer sudah selesai
         currentPizza = null;
-
-        Debug.Log(
-            pizzaType +
-            " Pizza berhasil diberikan ke Customer."
-        );
     }
 }

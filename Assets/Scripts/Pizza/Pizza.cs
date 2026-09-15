@@ -1,36 +1,53 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class Pizza : MonoBehaviour
+public class Pizza : NetworkBehaviour
 {
     public PizzaType pizzaType;
 
     private PizzaSpawner spawner;
+
+    // HoldPoint yang sedang diikuti Pizza
+    private Transform followTarget;
 
     public void SetSpawner(PizzaSpawner pizzaSpawner)
     {
         spawner = pizzaSpawner;
     }
 
-    public void PickUp(Transform holdPoint)
+    private void LateUpdate()
     {
+        // Hanya Server yang mengatur posisi Pizza.
+        if (!IsServer)
+            return;
+
+        // Kalau sedang dibawa Player,
+        // Pizza mengikuti HoldPoint.
+        if (followTarget != null)
+        {
+            transform.position = followTarget.position;
+            transform.rotation = followTarget.rotation;
+        }
+    }
+
+    public bool PickUpServer(Transform holdPoint)
+    {
+        if (!IsServer)
+            return false;
+
         if (holdPoint == null)
         {
             Debug.LogError("Hold Point belum diatur!");
-            return;
+            return false;
         }
-
-        transform.SetParent(holdPoint);
-
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
 
         Rigidbody rb = GetComponent<Rigidbody>();
 
         if (rb != null)
         {
-            rb.isKinematic = true;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
         }
 
         Collider col = GetComponent<Collider>();
@@ -40,21 +57,43 @@ public class Pizza : MonoBehaviour
             col.enabled = false;
         }
 
+        // Simpan HoldPoint sebagai target yang harus diikuti
+        followTarget = holdPoint;
+
+        // Langsung pindahkan Pizza ke HoldPoint
+        transform.position = holdPoint.position;
+        transform.rotation = holdPoint.rotation;
+
         if (spawner != null)
         {
             spawner.PizzaTaken();
         }
+
+        Debug.Log(
+            pizzaType +
+            " Pizza berhasil diambil dan mengikuti HoldPoint."
+        );
+
+        return true;
     }
 
-    public void Drop()
+    public void DropServer(Vector3 dropPosition)
     {
-        transform.SetParent(null);
+        if (!IsServer)
+            return;
+
+        // Berhenti mengikuti HoldPoint
+        followTarget = null;
+
+        transform.position = dropPosition;
 
         Rigidbody rb = GetComponent<Rigidbody>();
 
         if (rb != null)
         {
             rb.isKinematic = false;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
 
         Collider col = GetComponent<Collider>();
@@ -68,15 +107,25 @@ public class Pizza : MonoBehaviour
         {
             spawner.PizzaDropped(gameObject);
         }
+
+        Debug.Log(
+            pizzaType +
+            " Pizza berhasil dijatuhkan."
+        );
     }
 
-    public void Serve()
+    public void ServeServer()
     {
+        if (!IsServer)
+            return;
+
+        followTarget = null;
+
         if (spawner != null)
         {
             spawner.PizzaServed();
         }
 
-        Destroy(gameObject);
+        NetworkObject.Despawn(true);
     }
 }

@@ -74,7 +74,7 @@ public class Customer : MonoBehaviour
         );
 
         // Beritahu PizzaSpawner bahwa pizza berhasil diberikan
-        pizza.Serve();
+        //pizza.Serve();
 
         // Beritahu CustomerSpawner bahwa customer sudah dilayani
         if (spawner != null)
