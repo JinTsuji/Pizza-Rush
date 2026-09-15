@@ -84,12 +84,15 @@ public class CustomerSpawner : NetworkBehaviour
         if (newCustomer != null)
         {
             newCustomer.SetSpawner(this);
-            newCustomer.SetCustomerType(requestedPizza);
             newCustomer.SetSpawnPoint(selectedSpawnPoint);
 
             activeCustomers.Add(newCustomer);
 
+            // 1. SPAWN OBJEKNYA TERLEBIH DAHULU KE JARINGAN
             newCustomerObject.GetComponent<NetworkObject>().Spawn();
+
+            // 2. BARU SETELAH ITU SET JENIS PESANANNYA (Agar NetworkVariable tersinkronisasi)
+            newCustomer.SetCustomerType(requestedPizza);
 
             Debug.Log($"Customer baru muncul di {selectedSpawnPoint.name} | Meminta: {requestedPizza}");
         }

@@ -715,7 +715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PizzaSpawner
   ShowTopMostFoldoutHeaderGroup: 1
-  pizzaPrefab: {fileID: 5627895454355826073, guid: bc83cdf6fc53a6041aee7459588905fa, type: 3}
+  pizzaPrefab: {fileID: 6120377420224737197, guid: e0f0e55bf9a148f419eb03734e326221, type: 3}
   spawnPoint: {fileID: 1655393603}
   pizzaType: 1
 --- !u!1 &1201671928
