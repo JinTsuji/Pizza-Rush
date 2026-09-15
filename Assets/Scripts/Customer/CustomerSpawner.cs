@@ -1,8 +1,9 @@
 using UnityEngine;
+using Unity.Netcode;
 using System.Collections;
 using System.Collections.Generic;
 
-public class CustomerSpawner : MonoBehaviour
+public class CustomerSpawner : NetworkBehaviour
 {
     [Header("Customer")]
     [SerializeField] private GameObject customerPrefab;
@@ -16,68 +17,45 @@ public class CustomerSpawner : MonoBehaviour
 
     private List<Customer> activeCustomers = new List<Customer>();
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        StartCoroutine(CustomerSpawnRoutine());
+        if (IsServer)
+        {
+            StartCoroutine(CustomerSpawnRoutine());
+        }
     }
 
     private IEnumerator CustomerSpawnRoutine()
     {
-        // Customer pertama langsung muncul
         SpawnCustomer();
 
         while (true)
         {
             yield return new WaitForSeconds(spawnDelay);
-
-            // Coba spawn customer baru
             SpawnCustomer();
         }
     }
 
     private void SpawnCustomer()
     {
-        // Bersihkan customer yang sudah tidak ada
         CleanupCustomerList();
 
-        // Cek maximum customer
         if (activeCustomers.Count >= maxCustomers)
         {
-            Debug.Log(
-                "Maximum customer tercapai: " +
-                activeCustomers.Count +
-                "/" +
-                maxCustomers
-            );
-
+            Debug.Log("Maximum customer tercapai: " + activeCustomers.Count + "/" + maxCustomers);
             return;
         }
 
-        if (customerPrefab == null)
-        {
-            Debug.LogError("Customer Prefab belum diisi!");
-            return;
-        }
+        if (customerPrefab == null || spawnPoints == null || spawnPoints.Length == 0) return;
 
-        if (spawnPoints == null || spawnPoints.Length == 0)
-        {
-            Debug.LogError("Spawn Points belum diisi!");
-            return;
-        }
-
-        // Cari spawn point yang masih kosong
-        List<Transform> availableSpawnPoints =
-            new List<Transform>();
+        List<Transform> availableSpawnPoints = new List<Transform>();
 
         foreach (Transform spawnPoint in spawnPoints)
         {
             bool isOccupied = false;
-
             foreach (Customer customer in activeCustomers)
             {
-                if (customer == null)
-                    continue;
-
+                if (customer == null) continue;
                 if (customer.GetSpawnPoint() == spawnPoint)
                 {
                     isOccupied = true;
@@ -85,47 +63,23 @@ public class CustomerSpawner : MonoBehaviour
                 }
             }
 
-            if (!isOccupied)
-            {
-                availableSpawnPoints.Add(spawnPoint);
-            }
+            if (!isOccupied) availableSpawnPoints.Add(spawnPoint);
         }
 
-        // Semua spawn point sedang digunakan
-        if (availableSpawnPoints.Count == 0)
-        {
-            Debug.Log("Semua Customer Spawn Point sedang digunakan.");
-            return;
-        }
+        if (availableSpawnPoints.Count == 0) return;
 
-        // Pilih spawn point kosong secara random
-        int randomIndex =
-            Random.Range(0, availableSpawnPoints.Count);
+        int randomIndex = Random.Range(0, availableSpawnPoints.Count);
+        Transform selectedSpawnPoint = availableSpawnPoints[randomIndex];
 
-        Transform selectedSpawnPoint =
-            availableSpawnPoints[randomIndex];
+        PizzaType requestedPizza = (Random.Range(0, 2) == 0) ? PizzaType.Pepperoni : PizzaType.Cheese;
 
-        // Random jenis pizza
-        PizzaType requestedPizza;
-
-        if (Random.Range(0, 2) == 0)
-        {
-            requestedPizza = PizzaType.Pepperoni;
-        }
-        else
-        {
-            requestedPizza = PizzaType.Cheese;
-        }
-
-        // Spawn customer
         GameObject newCustomerObject = Instantiate(
             customerPrefab,
             selectedSpawnPoint.position,
             selectedSpawnPoint.rotation
         );
 
-        Customer newCustomer =
-            newCustomerObject.GetComponent<Customer>();
+        Customer newCustomer = newCustomerObject.GetComponent<Customer>();
 
         if (newCustomer != null)
         {
@@ -135,40 +89,38 @@ public class CustomerSpawner : MonoBehaviour
 
             activeCustomers.Add(newCustomer);
 
-            Debug.Log(
-                "Customer baru muncul di " +
-                selectedSpawnPoint.name +
-                " | Meminta: " +
-                requestedPizza +
-                " | Customer aktif: " +
-                activeCustomers.Count +
-                "/" +
-                maxCustomers
-            );
+            newCustomerObject.GetComponent<NetworkObject>().Spawn();
+
+            Debug.Log($"Customer baru muncul di {selectedSpawnPoint.name} | Meminta: {requestedPizza}");
         }
         else
         {
-            Debug.LogError(
-                "Customer Prefab tidak memiliki script Customer!"
-            );
-
             Destroy(newCustomerObject);
         }
     }
 
+    // ==========================================
+    // LOGIKA PENGHAPUSAN PELANGGAN YANG DILAYANI
+    // ==========================================
     public void CustomerServed(Customer customer)
     {
+        // 1. Pastikan hanya Host/Server yang boleh menghapus pelanggan
+        if (!IsServer) return;
+
         if (customer != null)
         {
+            // 2. Kosongkan slot di daftar agar timer bisa memunculkan pelanggan baru
             activeCustomers.Remove(customer);
+
+            // 3. Hancurkan wujud fisik pelanggan dari layar semua pemain (Host & Client)
+            NetworkObject netObj = customer.GetComponent<NetworkObject>();
+            if (netObj != null && netObj.IsSpawned)
+            {
+                netObj.Despawn(); // Despawn otomatis akan menghancurkan GameObject-nya
+            }
         }
 
-        Debug.Log(
-            "Customer dilayani. Customer aktif sekarang: " +
-            activeCustomers.Count +
-            "/" +
-            maxCustomers
-        );
+        Debug.Log("Customer dilayani. Customer aktif sekarang: " + activeCustomers.Count + "/" + maxCustomers);
     }
 
     private void CleanupCustomerList()

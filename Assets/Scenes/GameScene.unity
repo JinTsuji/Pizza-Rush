@@ -715,7 +715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PizzaSpawner
   ShowTopMostFoldoutHeaderGroup: 1
-  pizzaPrefab: {fileID: 6689467495087920124, guid: 3c24a16f82212fc469959b2fc1a5078d, type: 3}
+  pizzaPrefab: {fileID: 5627895454355826073, guid: bc83cdf6fc53a6041aee7459588905fa, type: 3}
   spawnPoint: {fileID: 1655393603}
   pizzaType: 1
 --- !u!1 &1201671928
@@ -1162,6 +1162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2028381009}
+  - component: {fileID: 2028381010}
   - component: {fileID: 2028381008}
   m_Layer: 0
   m_Name: CustomerSpawner
@@ -1182,6 +1183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5756dec987f0524c93776a9b39e7024, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomerSpawner
+  ShowTopMostFoldoutHeaderGroup: 1
   customerPrefab: {fileID: 1801276947214458413, guid: 13d62d7a27e37f74a9fcc222a0e2d997, type: 3}
   spawnPoints:
   - {fileID: 777784640}
@@ -1210,6 +1212,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2028381010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028381007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2139601420
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  m_InScenePlacedDisabledByDefault: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  m_InScenePlaced: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &2064085690
 GameObject:
   m_ObjectHideFlags: 0
@@ -1410,7 +1439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PizzaSpawner
   ShowTopMostFoldoutHeaderGroup: 1
-  pizzaPrefab: {fileID: 6689467495087920124, guid: f0d1a8774cfdbfa4b9d33b2e3ecef52e, type: 3}
+  pizzaPrefab: {fileID: 559233067647214033, guid: c7422e8ebbd37e64a9445147c0ab7218, type: 3}
   spawnPoint: {fileID: 2064085691}
   pizzaType: 0
 --- !u!1660057539 &9223372036854775807
