@@ -66,10 +66,10 @@ public class PlayerInteraction : NetworkBehaviour
         }
 
         // 3. Tombol Q untuk menjatuhkan Pizza
-        if (Keyboard.current.qKey.wasPressedThisFrame)
+        /*if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             TryDropPizza();
-        }
+        }*/
     }
 
     // ==========================================
@@ -249,7 +249,7 @@ public class PlayerInteraction : NetworkBehaviour
     // ==========================================
     // LOGIKA MENJATUHKAN PIZZA (Tombol Q)
     // ==========================================
-    private void TryDropPizza()
+    /*private void TryDropPizza()
     {
         if (heldPizza == null)
         {
@@ -278,7 +278,7 @@ public class PlayerInteraction : NetworkBehaviour
 
         heldPizzaId.Value = ulong.MaxValue;
         Debug.Log("Pizza berhasil dijatuhkan.");
-    }
+    }*/
 
     private void OnDrawGizmosSelected()
     {
