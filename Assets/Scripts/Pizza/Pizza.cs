@@ -21,8 +21,7 @@ public class Pizza : NetworkBehaviour
         if (!IsServer)
             return;
 
-        // Kalau sedang dibawa Player,
-        // Pizza mengikuti HoldPoint.
+        // Kalau sedang dibawa Player, Pizza mengikuti HoldPoint.
         if (followTarget != null)
         {
             transform.position = followTarget.position;
@@ -41,39 +40,22 @@ public class Pizza : NetworkBehaviour
             return false;
         }
 
-        Rigidbody rb = GetComponent<Rigidbody>();
-
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.isKinematic = true;
-        }
-
-        Collider col = GetComponent<Collider>();
-
-        if (col != null)
-        {
-            col.enabled = false;
-        }
-
         // Simpan HoldPoint sebagai target yang harus diikuti
         followTarget = holdPoint;
 
-        // Langsung pindahkan Pizza ke HoldPoint
+        // Langsung pindahkan Pizza ke HoldPoint di Server
         transform.position = holdPoint.position;
         transform.rotation = holdPoint.rotation;
+
+        // PANGGIL CLIENT RPC: Beritahu SEMUA pemain untuk mematikan tabrakan & fisik pizza ini
+        UpdatePhysicsClientRpc(true);
 
         if (spawner != null)
         {
             spawner.PizzaTaken();
         }
 
-        Debug.Log(
-            pizzaType +
-            " Pizza berhasil diambil dan mengikuti HoldPoint."
-        );
-
+        Debug.Log(pizzaType + " Pizza berhasil diambil dan mengikuti HoldPoint.");
         return true;
     }
 
@@ -84,34 +66,17 @@ public class Pizza : NetworkBehaviour
 
         // Berhenti mengikuti HoldPoint
         followTarget = null;
-
         transform.position = dropPosition;
 
-        Rigidbody rb = GetComponent<Rigidbody>();
-
-        if (rb != null)
-        {
-            rb.isKinematic = false;
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
-
-        Collider col = GetComponent<Collider>();
-
-        if (col != null)
-        {
-            col.enabled = true;
-        }
+        // PANGGIL CLIENT RPC: Beritahu SEMUA pemain untuk menyalakan kembali tabrakan & fisik pizza
+        UpdatePhysicsClientRpc(false);
 
         if (spawner != null)
         {
             spawner.PizzaDropped(gameObject);
         }
 
-        Debug.Log(
-            pizzaType +
-            " Pizza berhasil dijatuhkan."
-        );
+        Debug.Log(pizzaType + " Pizza berhasil dijatuhkan.");
     }
 
     public void ServeServer()
@@ -127,5 +92,44 @@ public class Pizza : NetworkBehaviour
         }
 
         NetworkObject.Despawn(true);
+    }
+
+    // ==========================================
+    // SINKRONISASI FISIKA KE SEMUA CLIENT
+    // ==========================================
+    [ClientRpc]
+    private void UpdatePhysicsClientRpc(bool isHeld)
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        Collider col = GetComponent<Collider>();
+
+        if (isHeld)
+        {
+            // Jika sedang dipegang: Matikan gravitasi & tabrakan di layar semua orang
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true;
+            }
+            if (col != null)
+            {
+                col.enabled = false;
+            }
+        }
+        else
+        {
+            // Jika dijatuhkan: Nyalakan kembali gravitasi & tabrakan di layar semua orang
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+            if (col != null)
+            {
+                col.enabled = true;
+            }
+        }
     }
 }
