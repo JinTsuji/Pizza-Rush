@@ -1,33 +1,24 @@
 using UnityEngine;
 using Unity.Netcode;
-using UnityEngine.SceneManagement;
 
-public class LobbyManager : MonoBehaviour
+public class LobbyController : MonoBehaviour
 {
+    // Dipanggil saat tombol "Buat Sesi" ditekan
     public void StartHost()
     {
-        // Jika sebelumnya sudah menekan tombol Client/Host, matikan koneksi lamanya terlebih dahulu
-        if (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsServer)
-        {
-            NetworkManager.Singleton.Shutdown();
-        }
-
-        Debug.Log("Membuat Game Session (Host)... Memuat GameScene.");
-
+        // 1. Mulai jaringan sebagai Host
         NetworkManager.Singleton.StartHost();
-        NetworkManager.Singleton.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
+
+        // 2. PINDAH SCENE MENGGUNAKAN NETCODE (Bukan SceneManager biasa)
+        // Pastikan nama "GameScene" sesuai dengan nama file scene game Anda persis (huruf besar/kecilnya)
+        NetworkManager.Singleton.SceneManager.LoadScene("GameScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
+    // Dipanggil saat tombol "Bergabung Sesi" ditekan
     public void StartClient()
     {
-        // Jika sebelumnya sudah menekan tombol Client/Host, matikan koneksi lamanya terlebih dahulu
-        if (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsServer)
-        {
-            NetworkManager.Singleton.Shutdown();
-        }
-
-        Debug.Log("Bergabung ke Sesi (Client)... Menunggu Host.");
-
+        // Client hanya perlu konek. 
+        // Karena "Enable Scene Management" aktif, Client akan OTOMATIS ditarik masuk ke GameScene menyusul Host!
         NetworkManager.Singleton.StartClient();
     }
 }

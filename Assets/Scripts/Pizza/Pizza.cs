@@ -1,134 +1,229 @@
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 
 public class Pizza : NetworkBehaviour
 {
     public PizzaType pizzaType;
-
     private PizzaSpawner spawner;
 
-    // HoldPoint yang sedang diikuti Pizza
-    private Transform followTarget;
+    // ==========================================
+    // DEBUG NETWORK SPAWN
+    // ==========================================
+    public override void OnNetworkSpawn()
+    {
+        Debug.Log(
+            $"[PIZZA SPAWN] " +
+            $"Type={pizzaType} | " +
+            $"IsServer={IsServer} | " +
+            $"IsClient={IsClient} | " +
+            $"Owner={OwnerClientId} | " +
+            $"NetworkObjectId={NetworkObjectId} | " +
+            $"Position={transform.position}"
+        );
+    }
 
     public void SetSpawner(PizzaSpawner pizzaSpawner)
     {
         spawner = pizzaSpawner;
     }
 
-    private void LateUpdate()
-    {
-        // Hanya Server yang mengatur posisi Pizza.
-        if (!IsServer)
-            return;
-
-        // Kalau sedang dibawa Player, Pizza mengikuti HoldPoint.
-        if (followTarget != null)
-        {
-            transform.position = followTarget.position;
-            transform.rotation = followTarget.rotation;
-        }
-    }
-
     public bool PickUpServer(Transform holdPoint)
     {
-        if (!IsServer)
-            return false;
+        if (!IsServer) return false;
+        if (holdPoint == null) return false;
 
-        if (holdPoint == null)
-        {
-            Debug.LogError("Hold Point belum diatur!");
-            return false;
-        }
+        NetworkObject playerNetObj =
+            holdPoint.GetComponentInParent<NetworkObject>();
 
-        // Simpan HoldPoint sebagai target yang harus diikuti
-        followTarget = holdPoint;
+        ulong playerId =
+            playerNetObj != null
+                ? playerNetObj.NetworkObjectId
+                : ulong.MaxValue;
 
-        // Langsung pindahkan Pizza ke HoldPoint di Server
-        transform.position = holdPoint.position;
-        transform.rotation = holdPoint.rotation;
+        string holdPointName = holdPoint.name;
 
-        // PANGGIL CLIENT RPC: Beritahu SEMUA pemain untuk mematikan tabrakan & fisik pizza ini
-        UpdatePhysicsClientRpc(true);
+        // Matikan sync posisi selama dipegang (untuk dedicated server)
+        NetworkTransform nt = GetComponent<NetworkTransform>();
+        if (nt != null) nt.enabled = false;
+
+        // Server: tempelkan pizza ke HoldPoint
+        transform.SetParent(holdPoint);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+
+        // Beritahu semua client
+        UpdatePhysicsClientRpc(true, playerId, holdPointName);
 
         if (spawner != null)
-        {
             spawner.PizzaTaken();
-        }
 
-        Debug.Log(pizzaType + " Pizza berhasil diambil dan mengikuti HoldPoint.");
+        Debug.Log(
+            $"[PIZZA PICKUP] {pizzaType} berhasil diambil oleh Player {playerId}"
+        );
+
         return true;
     }
 
     public void DropServer(Vector3 dropPosition)
     {
-        if (!IsServer)
-            return;
+        if (!IsServer) return;
 
-        // Berhenti mengikuti HoldPoint
-        followTarget = null;
+        // Lepaskan dari tangan
+        transform.SetParent(null);
         transform.position = dropPosition;
 
-        // PANGGIL CLIENT RPC: Beritahu SEMUA pemain untuk menyalakan kembali tabrakan & fisik pizza
-        UpdatePhysicsClientRpc(false);
-
-        if (spawner != null)
+        // Aktifkan lagi sync posisi, lalu teleport agar client tidak interpolasi dari posisi lama
+        NetworkTransform nt = GetComponent<NetworkTransform>();
+        if (nt != null)
         {
-            spawner.PizzaDropped(gameObject);
+            nt.enabled = true;
+            nt.Teleport(dropPosition, transform.rotation, transform.localScale);
         }
 
-        Debug.Log(pizzaType + " Pizza berhasil dijatuhkan.");
+        UpdatePhysicsClientRpc(false, ulong.MaxValue, "");
+
+        if (spawner != null)
+            spawner.PizzaDropped(gameObject);
+
+        Debug.Log(
+            $"[PIZZA DROP] {pizzaType} dijatuhkan di {dropPosition}"
+        );
     }
 
     public void ServeServer()
     {
-        if (!IsServer)
-            return;
+        if (!IsServer) return;
 
-        followTarget = null;
+        transform.SetParent(null);
 
         if (spawner != null)
-        {
             spawner.PizzaServed();
-        }
+
+        Debug.Log(
+            $"[PIZZA SERVE] {pizzaType} dihancurkan oleh Server"
+        );
 
         NetworkObject.Despawn(true);
     }
 
     // ==========================================
-    // SINKRONISASI FISIKA KE SEMUA CLIENT
+    // SINKRONISASI FISIKA & LOKASI KE CLIENT
     // ==========================================
     [ClientRpc]
-    private void UpdatePhysicsClientRpc(bool isHeld)
+    private void UpdatePhysicsClientRpc(
+        bool isHeld,
+        ulong playerId,
+        string hpName)
     {
         Rigidbody rb = GetComponent<Rigidbody>();
         Collider col = GetComponent<Collider>();
+        NetworkTransform nt = GetComponent<NetworkTransform>();
+
+        Debug.Log(
+            $"[PIZZA RPC] Type={pizzaType} | " +
+            $"isHeld={isHeld} | " +
+            $"playerId={playerId} | " +
+            $"hpName={hpName} | " +
+            $"IsServer={IsServer} | " +
+            $"IsClient={IsClient}"
+        );
 
         if (isHeld)
         {
-            // Jika sedang dipegang: Matikan gravitasi & tabrakan di layar semua orang
+            // Matikan fisika lokal agar tidak melawan posisi
             if (rb != null)
             {
                 rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
                 rb.isKinematic = true;
             }
+
             if (col != null)
-            {
                 col.enabled = false;
+
+            // Matikan sync posisi dari network selama dipegang,
+            // supaya posisi dari HoldPoint (lokal) tidak tertimpa data lama dari server
+            if (nt != null)
+                nt.enabled = false;
+
+            // Client: tempelkan pizza ke HoldPoint pemain yang membawa
+            if (!IsServer && playerId != ulong.MaxValue)
+            {
+                if (NetworkManager.Singleton.SpawnManager.SpawnedObjects
+                    .TryGetValue(playerId, out NetworkObject playerObj))
+                {
+                    Debug.Log(
+                        $"[PIZZA HOLDPOINT] Player {playerId} ditemukan. " +
+                        $"Mencari HoldPoint: {hpName}"
+                    );
+
+                    Transform[] allChildren =
+                        playerObj.GetComponentsInChildren<Transform>();
+
+                    bool foundHoldPoint = false;
+
+                    foreach (Transform t in allChildren)
+                    {
+                        if (t.name == hpName)
+                        {
+                            transform.SetParent(t);
+                            transform.localPosition = Vector3.zero;
+                            transform.localRotation = Quaternion.identity;
+
+                            foundHoldPoint = true;
+
+                            Debug.Log(
+                                $"[PIZZA HOLDPOINT] {pizzaType} " +
+                                $"berhasil ditempel ke {hpName}"
+                            );
+
+                            break;
+                        }
+                    }
+
+                    if (!foundHoldPoint)
+                    {
+                        Debug.LogError(
+                            $"[PIZZA HOLDPOINT] HoldPoint '{hpName}' " +
+                            $"TIDAK DITEMUKAN pada Player {playerId}!"
+                        );
+                    }
+                }
+                else
+                {
+                    Debug.LogError(
+                        $"[PIZZA HOLDPOINT] Player NetworkObject " +
+                        $"{playerId} TIDAK DITEMUKAN di Client!"
+                    );
+                }
             }
         }
         else
         {
-            // Jika dijatuhkan: Nyalakan kembali gravitasi & tabrakan di layar semua orang
+            // Kembalikan fisika
             if (rb != null)
             {
                 rb.isKinematic = false;
                 rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
             }
+
             if (col != null)
-            {
                 col.enabled = true;
+
+            // Aktifkan lagi sync posisi setelah dilepas
+            if (nt != null)
+                nt.enabled = true;
+
+            // Client: lepaskan dari tangan
+            if (!IsServer)
+            {
+                transform.SetParent(null);
+
+                Debug.Log(
+                    $"[PIZZA DROP CLIENT] {pizzaType} dilepas dari HoldPoint"
+                );
             }
         }
     }

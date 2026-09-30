@@ -74,11 +74,15 @@ public class PizzaSpawner : NetworkBehaviour
             return;
         }
 
+        Debug.Log(
+            $"[PIZZA NETWORK] Spawn: {pizzaPrefab.name} | Type: {pizzaType}"
+        );
+
         networkObject.Spawn();
 
         Debug.Log(
-            pizzaType +
-            " Pizza berhasil di-spawn oleh Server."
+            $"[PIZZA NETWORK] {pizzaType} berhasil di-spawn. " +
+            $"NetworkObjectId: {networkObject.NetworkObjectId}"
         );
     }
 
@@ -89,7 +93,6 @@ public class PizzaSpawner : NetworkBehaviour
 
         currentPizza = null;
 
-        // Langsung buat pizza pengganti
         SpawnPizza();
 
         Debug.Log(
