@@ -12,13 +12,15 @@ public class PlayerMovement3D : NetworkBehaviour
     public float rotationSpeed = 10f;
 
     private Rigidbody rb;
+    private Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
 
-    void Update()
+    void Update() // Benar
     {
         // 3. Kunci Player Sync: Cek apakah komputer ini adalah pemilik kubus tersebut
         if (!IsOwner) return;
@@ -51,6 +53,10 @@ public class PlayerMovement3D : NetworkBehaviour
         }
 
         input = input.normalized;
+
+        float animationSpeed = input.magnitude;
+
+        animator.SetFloat("Speed", animationSpeed);
 
         // Arah gerakan di dunia 3D
         Vector3 moveDirection = new Vector3(

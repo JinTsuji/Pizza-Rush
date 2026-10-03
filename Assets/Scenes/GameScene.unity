@@ -3108,6 +3108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3af7e65418646d40bc0758768132035, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PizzaSpawner
+  ShowTopMostFoldoutHeaderGroup: 1
   pizzaPrefab: {fileID: 6120377420224737197, guid: e0f0e55bf9a148f419eb03734e326221, type: 3}
   spawnPoint: {fileID: 1655393603}
   pizzaType: 1
@@ -5170,6 +5171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3af7e65418646d40bc0758768132035, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PizzaSpawner
+  ShowTopMostFoldoutHeaderGroup: 1
   pizzaPrefab: {fileID: 559233067647214033, guid: c7422e8ebbd37e64a9445147c0ab7218, type: 3}
   spawnPoint: {fileID: 2064085691}
   pizzaType: 0
