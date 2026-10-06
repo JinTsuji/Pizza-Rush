@@ -10,6 +10,9 @@ public class PlayerInteraction : NetworkBehaviour
     [Header("Pizza")]
     [SerializeField] private Transform holdPoint;
 
+    [Header("Interaksi Antar Player")]
+    [SerializeField] private float stealCooldown = 1.5f;
+
     private NetworkVariable<ulong> heldPizzaId =
         new NetworkVariable<ulong>(
             ulong.MaxValue,
@@ -18,12 +21,14 @@ public class PlayerInteraction : NetworkBehaviour
         );
 
     private Pizza heldPizza;
-    private Animator animator;
+
+    // Hanya dipakai di Server, mencegah spam rebut
+    private float lastStealTime = -999f;
+
+    private bool HandsEmpty => heldPizzaId.Value == ulong.MaxValue;
 
     public override void OnNetworkSpawn()
     {
-        animator = GetComponentInChildren<Animator>();
-
         heldPizzaId.OnValueChanged += OnHeldPizzaChanged;
         UpdateHeldPizzaReference(heldPizzaId.Value);
     }
@@ -50,7 +55,7 @@ public class PlayerInteraction : NetworkBehaviour
             }
             else
             {
-                Debug.Log("Tangan sudah penuh! Tekan F untuk memberikan ke pelanggan, atau Q untuk menjatuhkan.");
+                Debug.Log("Tangan sudah penuh! Tekan F untuk memberikan ke pelanggan, G untuk memberi ke player lain.");
             }
         }
 
@@ -68,11 +73,165 @@ public class PlayerInteraction : NetworkBehaviour
             }
         }
 
-        // 3. Tombol Q untuk menjatuhkan Pizza
+        // 3. Tombol G untuk memberikan Pizza ke player lain
+        if (Keyboard.current.gKey.wasPressedThisFrame)
+        {
+            TryGivePizzaToPlayer();
+        }
+
+        // 4. Tombol R untuk merebut Pizza dari player lain
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            TryStealPizzaFromPlayer();
+        }
+
+        // 5. Tombol Q untuk menjatuhkan Pizza
         /*if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             TryDropPizza();
         }*/
+    }
+
+    // ==========================================
+    // INTERAKSI ANTAR PLAYER (Tombol G dan R)
+    // ==========================================
+
+    // Mencari player lain terdekat. Kalau mustHoldPizza true, hanya player yang membawa pizza;
+    // kalau false, hanya player yang tangannya kosong.
+    private PlayerInteraction FindNearestOtherPlayer(bool mustHoldPizza)
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, interactDistance);
+
+        PlayerInteraction closest = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Collider col in colliders)
+        {
+            PlayerInteraction other = col.GetComponentInParent<PlayerInteraction>();
+
+            if (other == null || other == this)
+                continue;
+
+            if (mustHoldPizza == other.HandsEmpty)
+                continue;
+
+            float distance = Vector3.Distance(transform.position, other.transform.position);
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closest = other;
+            }
+        }
+
+        return closest;
+    }
+
+    private void TryGivePizzaToPlayer()
+    {
+        if (heldPizza == null)
+        {
+            Debug.Log("Tidak ada pizza yang bisa diberikan, tangan kosong.");
+            return;
+        }
+
+        PlayerInteraction target = FindNearestOtherPlayer(mustHoldPizza: false);
+        if (target == null)
+        {
+            Debug.Log("Tidak ada player dengan tangan kosong di dekatmu.");
+            return;
+        }
+
+        RequestGivePizzaRpc(target.NetworkObject.NetworkObjectId);
+    }
+
+    private void TryStealPizzaFromPlayer()
+    {
+        if (heldPizza != null)
+        {
+            Debug.Log("Tangan masih penuh, tidak bisa merebut pizza.");
+            return;
+        }
+
+        PlayerInteraction target = FindNearestOtherPlayer(mustHoldPizza: true);
+        if (target == null)
+        {
+            Debug.Log("Tidak ada player yang membawa pizza di dekatmu.");
+            return;
+        }
+
+        RequestStealPizzaRpc(target.NetworkObject.NetworkObjectId);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestGivePizzaRpc(ulong targetPlayerNetworkObjectId)
+    {
+        // Player yang memanggil RPC ini adalah pemberi
+        if (!TryGetPlayer(targetPlayerNetworkObjectId, out PlayerInteraction target))
+            return;
+
+        TransferPizzaServer(this, target);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestStealPizzaRpc(ulong targetPlayerNetworkObjectId)
+    {
+        // Player yang memanggil RPC ini adalah perebut
+        if (!TryGetPlayer(targetPlayerNetworkObjectId, out PlayerInteraction victim))
+            return;
+
+        if (Time.time - lastStealTime < stealCooldown)
+            return;
+
+        if (TransferPizzaServer(victim, this))
+            lastStealTime = Time.time;
+    }
+
+    private bool TryGetPlayer(ulong networkObjectId, out PlayerInteraction player)
+    {
+        player = null;
+
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject netObj))
+            return false;
+
+        player = netObj.GetComponent<PlayerInteraction>();
+        return player != null;
+    }
+
+    // Hanya dijalankan di Server. Memindahkan pizza dari 'from' ke 'to'.
+    private static bool TransferPizzaServer(PlayerInteraction from, PlayerInteraction to)
+    {
+        if (from == to)
+            return false;
+
+        // Pemberi harus punya pizza, penerima harus kosong
+        if (from.HandsEmpty || !to.HandsEmpty)
+            return false;
+
+        // Cek jarak dari sisi Server (+1.5f toleransi lag)
+        float distance = Vector3.Distance(from.transform.position, to.transform.position);
+        if (distance > from.interactDistance + 1.5f)
+        {
+            Debug.LogWarning("Dua player terlalu jauh untuk memindahkan pizza.");
+            return false;
+        }
+
+        ulong pizzaId = from.heldPizzaId.Value;
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(pizzaId, out NetworkObject pizzaNetObj))
+            return false;
+
+        Pizza pizza = pizzaNetObj.GetComponent<Pizza>();
+        if (pizza == null)
+            return false;
+
+        if (!pizza.TransferServer(to.holdPoint))
+            return false;
+
+        from.heldPizzaId.Value = ulong.MaxValue;
+        to.heldPizzaId.Value = pizzaId;
+
+        Debug.Log("Server: pizza " + pizza.pizzaType + " berpindah antar player.");
+        return true;
     }
 
     // ==========================================
@@ -132,10 +291,14 @@ public class PlayerInteraction : NetworkBehaviour
 
         if (customer != null && pizza != null)
         {
+            // Pastikan pizza ini memang yang dipegang player ini (mencegah pizza milik player lain dipakai)
+            if (heldPizzaId.Value != pizzaNetworkObjectId)
+                return;
+
             // Cek jarak dari Server untuk mencegah kecurangan (cheat)
             float distance = Vector3.Distance(transform.position, customer.transform.position);
 
-            // PERUBAHAN DISINI: Tambahan + 1.5f agar Server tidak menolak input karena lag jaringan
+            // Tambahan + 1.5f agar Server tidak menolak input karena lag jaringan
             if (distance > interactDistance + 1.5f)
             {
                 Debug.LogWarning("Player terlalu jauh dari Customer.");
@@ -209,7 +372,7 @@ public class PlayerInteraction : NetworkBehaviour
 
         float distance = Vector3.Distance(transform.position, pizza.transform.position);
 
-        // PERUBAHAN DISINI: Tambahan + 1.5f agar Server tidak menolak input karena lag jaringan
+        // Tambahan + 1.5f agar Server tidak menolak input karena lag jaringan
         if (distance > interactDistance + 1.5f)
         {
             Debug.LogWarning("Player terlalu jauh dari Pizza.");
@@ -230,40 +393,24 @@ public class PlayerInteraction : NetworkBehaviour
     private void OnHeldPizzaChanged(ulong previousValue, ulong newValue)
     {
         UpdateHeldPizzaReference(newValue);
-        UpdateCarryAnimation();
     }
 
     private void UpdateHeldPizzaReference(ulong networkObjectId)
-{
-    if (networkObjectId == ulong.MaxValue)
     {
-        heldPizza = null;
-        UpdateCarryAnimation();
-        return;
+        if (networkObjectId == ulong.MaxValue)
+        {
+            heldPizza = null;
+            return;
+        }
+
+        if (NetworkManager.Singleton == null)
+            return;
+
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject networkObject))
+        {
+            heldPizza = networkObject.GetComponent<Pizza>();
+        }
     }
-
-    if (NetworkManager.Singleton == null)
-        return;
-
-    if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(
-        networkObjectId,
-        out NetworkObject networkObject))
-    {
-        heldPizza = networkObject.GetComponent<Pizza>();
-        UpdateCarryAnimation();
-    }
-}
-
-    private void UpdateCarryAnimation()
-{
-    if (animator == null)
-        return;
-
-    animator.SetBool(
-        "IsCarryingPizza",
-        heldPizza != null
-    );
-}
 
     // ==========================================
     // LOGIKA MENJATUHKAN PIZZA (Tombol Q)

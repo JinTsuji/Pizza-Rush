@@ -65,6 +65,37 @@ public class Pizza : NetworkBehaviour
         return true;
     }
 
+    // Memindahkan pizza yang sedang dipegang ke HoldPoint player lain
+    // (tidak memanggil spawner.PizzaTaken() lagi karena pizza sudah pernah diambil)
+    public bool TransferServer(Transform newHoldPoint)
+    {
+        if (!IsServer) return false;
+        if (newHoldPoint == null) return false;
+
+        NetworkObject playerNetObj =
+            newHoldPoint.GetComponentInParent<NetworkObject>();
+
+        ulong playerId =
+            playerNetObj != null
+                ? playerNetObj.NetworkObjectId
+                : ulong.MaxValue;
+
+        NetworkTransform nt = GetComponent<NetworkTransform>();
+        if (nt != null) nt.enabled = false;
+
+        transform.SetParent(newHoldPoint);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+
+        UpdatePhysicsClientRpc(true, playerId, newHoldPoint.name);
+
+        Debug.Log(
+            $"[PIZZA TRANSFER] {pizzaType} dipindahkan ke Player {playerId}"
+        );
+
+        return true;
+    }
+
     public void DropServer(Vector3 dropPosition)
     {
         if (!IsServer) return;
