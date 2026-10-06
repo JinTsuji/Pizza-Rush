@@ -18,9 +18,12 @@ public class PlayerInteraction : NetworkBehaviour
         );
 
     private Pizza heldPizza;
+    private Animator animator;
 
     public override void OnNetworkSpawn()
     {
+        animator = GetComponentInChildren<Animator>();
+
         heldPizzaId.OnValueChanged += OnHeldPizzaChanged;
         UpdateHeldPizzaReference(heldPizzaId.Value);
     }
@@ -227,24 +230,40 @@ public class PlayerInteraction : NetworkBehaviour
     private void OnHeldPizzaChanged(ulong previousValue, ulong newValue)
     {
         UpdateHeldPizzaReference(newValue);
+        UpdateCarryAnimation();
     }
 
     private void UpdateHeldPizzaReference(ulong networkObjectId)
+{
+    if (networkObjectId == ulong.MaxValue)
     {
-        if (networkObjectId == ulong.MaxValue)
-        {
-            heldPizza = null;
-            return;
-        }
-
-        if (NetworkManager.Singleton == null)
-            return;
-
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject networkObject))
-        {
-            heldPizza = networkObject.GetComponent<Pizza>();
-        }
+        heldPizza = null;
+        UpdateCarryAnimation();
+        return;
     }
+
+    if (NetworkManager.Singleton == null)
+        return;
+
+    if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(
+        networkObjectId,
+        out NetworkObject networkObject))
+    {
+        heldPizza = networkObject.GetComponent<Pizza>();
+        UpdateCarryAnimation();
+    }
+}
+
+    private void UpdateCarryAnimation()
+{
+    if (animator == null)
+        return;
+
+    animator.SetBool(
+        "IsCarryingPizza",
+        heldPizza != null
+    );
+}
 
     // ==========================================
     // LOGIKA MENJATUHKAN PIZZA (Tombol Q)

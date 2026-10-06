@@ -188,15 +188,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.3703775
+      value: -5.9924755
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.01
+      value: -1.0100001
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.6553237
+      value: -3.2019997
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
       propertyPath: m_LocalRotation.w
@@ -253,6 +253,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7683089737814783381}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2404311277716985148}
   m_SourcePrefab: {fileID: 100100000, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
 --- !u!4 &7384421001625707581 stripped
 Transform:
@@ -306,7 +309,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!114 &7924168253858099909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,7 +322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4186217263
+  GlobalObjectIdHash: 2266415037
   InScenePlacedSourceGlobalObjectIdHash: 1037971581
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -355,3 +358,23 @@ MonoBehaviour:
   orderImage: {fileID: 5001904001522743382}
   pepperoniSprite: {fileID: -6292797819259006249, guid: f0d9ee2102df1444e9f060c4b9372d9f, type: 3}
   cheeseSprite: {fileID: 1105753901, guid: f0d9ee2102df1444e9f060c4b9372d9f, type: 3}
+--- !u!114 &2404311277716985148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7868188128268648071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 0
+  m_Animator: {fileID: 4361197477934611411}
+  TransitionStateInfoList: []
+  AnimatorParameterEntries:
+    ParameterEntries: []
+  AnimatorParametersExpanded: 0
