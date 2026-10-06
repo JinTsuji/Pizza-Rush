@@ -119,6 +119,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9222443020284938013}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8759718847889551426}
   m_SourcePrefab: {fileID: 100100000, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
 --- !u!95 &1555522318708123060 stripped
 Animator:
@@ -195,14 +198,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3768025567
+  GlobalObjectIdHash: 3276812335
   InScenePlacedSourceGlobalObjectIdHash: 3276812335
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
-  m_InScenePlaced: 1
+  m_InScenePlaced: 0
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
@@ -286,6 +289,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   interactDistance: 1
   holdPoint: {fileID: 741244977806316256}
+  pointsPerPizza: 10
+  stealCooldown: 1.5
 --- !u!114 &9222443020284938013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,3 +319,21 @@ MonoBehaviour:
       Synchronize: 1
       ParameterType: 4
   AnimatorParametersExpanded: 0
+--- !u!114 &-8759718847889551426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5205509393743324532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c2dd81897d04d4592ba5d5bfb7631a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerScore
+  ShowTopMostFoldoutHeaderGroup: 1
+  Score:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0

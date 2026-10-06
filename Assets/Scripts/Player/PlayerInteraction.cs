@@ -10,6 +10,9 @@ public class PlayerInteraction : NetworkBehaviour
     [Header("Pizza")]
     [SerializeField] private Transform holdPoint;
 
+    [Header("Score")]
+    [SerializeField] private int pointsPerPizza = 10;
+
     [Header("Interaksi Antar Player")]
     [SerializeField] private float stealCooldown = 1.5f;
 
@@ -305,14 +308,22 @@ public class PlayerInteraction : NetworkBehaviour
                 return;
             }
 
+            // Tentukan benar/salah SEBELUM ReceivePizza, karena Customer bisa mengubah state-nya di dalam fungsi itu
+            bool isCorrectOrder = customer.requestedPizza.Value == pizza.pizzaType;
+
             // Panggil fungsi ReceivePizza di skrip Customer
             customer.ReceivePizza(pizza);
 
             // Jika pesanan BENAR, maka pizza akan dihancurkan (Despawn) oleh Customer.
             // Oleh karena itu, kita harus mengosongkan tangan pemain di sini.
-            if (customer.requestedPizza.Value == pizza.pizzaType)
+            if (isCorrectOrder)
             {
                 heldPizzaId.Value = ulong.MaxValue;
+
+                // Tambah score player yang melayani (server-authoritative)
+                if (TryGetComponent(out PlayerScore playerScore))
+                    playerScore.AddScoreServer(pointsPerPizza);
+
                 Debug.Log("Server: Serah terima berhasil, tangan pemain dikosongkan.");
             }
         }
