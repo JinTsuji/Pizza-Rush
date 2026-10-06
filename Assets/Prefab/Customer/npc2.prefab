@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.01, y: 2.43}
+  m_AnchoredPosition: {x: 0.01, y: 2}
   m_SizeDelta: {x: 847.6, y: 513.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &8694988359672513674
@@ -188,15 +188,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.510089
+      value: -6.3703775
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.0099999
+      value: -1.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.177
+      value: -2.6553237
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 60beb1810e9d50b45a0d5ffe1491c8ce, type: 3}
       propertyPath: m_LocalRotation.w
@@ -319,8 +319,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 125596126
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 4186217263
+  InScenePlacedSourceGlobalObjectIdHash: 1037971581
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
