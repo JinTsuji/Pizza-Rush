@@ -24,6 +24,7 @@ public class PlayerInteraction : NetworkBehaviour
         );
 
     private Pizza heldPizza;
+    private Animator animator;
 
     // Hanya dipakai di Server, mencegah spam rebut
     private float lastStealTime = -999f;
@@ -32,8 +33,12 @@ public class PlayerInteraction : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        animator = GetComponentInChildren<Animator>();
+
         heldPizzaId.OnValueChanged += OnHeldPizzaChanged;
+        
         UpdateHeldPizzaReference(heldPizzaId.Value);
+        UpdateCarryAnimation(heldPizzaId.Value);
     }
 
     public override void OnNetworkDespawn()
@@ -77,10 +82,10 @@ public class PlayerInteraction : NetworkBehaviour
         }
 
         // 3. Tombol G untuk memberikan Pizza ke player lain
-        if (Keyboard.current.gKey.wasPressedThisFrame)
+        /*if (Keyboard.current.gKey.wasPressedThisFrame)
         {
             TryGivePizzaToPlayer();
-        }
+        }*/
 
         // 4. Tombol R untuk merebut Pizza dari player lain
         if (Keyboard.current.rKey.wasPressedThisFrame)
@@ -130,7 +135,7 @@ public class PlayerInteraction : NetworkBehaviour
         return closest;
     }
 
-    private void TryGivePizzaToPlayer()
+    /*private void TryGivePizzaToPlayer()
     {
         if (heldPizza == null)
         {
@@ -146,7 +151,7 @@ public class PlayerInteraction : NetworkBehaviour
         }
 
         RequestGivePizzaRpc(target.NetworkObject.NetworkObjectId);
-    }
+    }*/
 
     private void TryStealPizzaFromPlayer()
     {
@@ -404,24 +409,27 @@ public class PlayerInteraction : NetworkBehaviour
     private void OnHeldPizzaChanged(ulong previousValue, ulong newValue)
     {
         UpdateHeldPizzaReference(newValue);
+        UpdateCarryAnimation(newValue);
     }
 
     private void UpdateHeldPizzaReference(ulong networkObjectId)
+{
+    if (networkObjectId == ulong.MaxValue)
     {
-        if (networkObjectId == ulong.MaxValue)
-        {
-            heldPizza = null;
-            return;
-        }
-
-        if (NetworkManager.Singleton == null)
-            return;
-
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out NetworkObject networkObject))
-        {
-            heldPizza = networkObject.GetComponent<Pizza>();
-        }
+        heldPizza = null;
+        return;
     }
+
+    if (NetworkManager.Singleton == null)
+        return;
+
+    if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(
+        networkObjectId,
+        out NetworkObject networkObject))
+    {
+        heldPizza = networkObject.GetComponent<Pizza>();
+    }
+}
 
     // ==========================================
     // LOGIKA MENJATUHKAN PIZZA (Tombol Q)
@@ -456,6 +464,19 @@ public class PlayerInteraction : NetworkBehaviour
         heldPizzaId.Value = ulong.MaxValue;
         Debug.Log("Pizza berhasil dijatuhkan.");
     }*/
+
+    private void UpdateCarryAnimation(ulong pizzaId)
+{
+    if (animator == null)
+        return;
+
+    bool isCarryingPizza = pizzaId != ulong.MaxValue;
+
+    animator.SetBool(
+        "IsCarryingPizza",
+        isCarryingPizza
+    );
+}
 
     private void OnDrawGizmosSelected()
     {

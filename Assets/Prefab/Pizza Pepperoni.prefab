@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.8544126
+      value: -3.9795918
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.95
+      value: 0.024
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.151669
+      value: -11.735
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -70,9 +70,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7442715967360895883}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 398998470683975163}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
       insertIndex: -1
@@ -83,33 +80,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 789061889667301942}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 382859644738509929}
   m_SourcePrefab: {fileID: 100100000, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
 --- !u!1 &559233067647214033 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1f7a9db1e9a883b45af9a1793937d70e, type: 3}
   m_PrefabInstance: {fileID: 793656436508761216}
   m_PrefabAsset: {fileID: 0}
---- !u!135 &7442715967360895883
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 559233067647214033}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &398998470683975163
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -149,14 +128,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1626728388
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 840276930
+  InScenePlacedSourceGlobalObjectIdHash: 1626728388
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
-  m_InScenePlaced: 0
+  m_InScenePlaced: 1
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
@@ -224,3 +203,24 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!65 &382859644738509929
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559233067647214033}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.49943542, y: 0.066555455, z: 0.5011282}
+  m_Center: {x: 0.0048890114, y: 0.047364227, z: -0.00033521652}

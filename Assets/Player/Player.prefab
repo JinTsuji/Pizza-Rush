@@ -84,6 +84,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
+    - target: {fileID: 5866666021909216657, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 373f517d18001d34ba532e6efb8673a7, type: 2}
