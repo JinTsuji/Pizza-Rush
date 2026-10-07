@@ -41,15 +41,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.01
+      value: -1.1463963
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.0099998
+      value: -1.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.058964
+      value: -10.172854
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -126,12 +126,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8759718847889551426}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1445376824074328526}
   m_SourcePrefab: {fileID: 100100000, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
---- !u!95 &1555522318708123060 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
-  m_PrefabInstance: {fileID: 4971066785576687653}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4861213147928199118 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
@@ -245,7 +243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClientNetworkTransform
   ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 1
+  NetworkTransformExpanded: 0
   AutoOwnerAuthorityTickOffset: 1
   PositionInterpolationType: 0
   RotationInterpolationType: 0
@@ -310,7 +308,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
-  m_Animator: {fileID: 1555522318708123060}
+  m_Animator: {fileID: -1445376824074328526}
   TransitionStateInfoList: []
   AnimatorParameterEntries:
     ParameterEntries:
@@ -341,3 +339,25 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+--- !u!95 &-1445376824074328526
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5205509393743324532}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: e8779834f9a235a4f9a13d7d909bff5b, type: 3}
+  m_Controller: {fileID: 9100000, guid: 373f517d18001d34ba532e6efb8673a7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

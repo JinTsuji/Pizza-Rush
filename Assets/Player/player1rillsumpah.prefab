@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4174460306381796876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6700813976982027990}
+  m_Layer: 0
+  m_Name: HoldPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6700813976982027990
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4174460306381796876}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.01, y: 0.828, z: 0.492}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8160863708332369969}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8560092955304153050
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10,15 +41,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.9515655
+      value: -2.7579763
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.0100001
+      value: -1.0099999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.716731
+      value: -10.002616
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
       propertyPath: m_LocalRotation.w
@@ -58,7 +89,10 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: c27f12b6a3cc2504cadf7554d50a4ab3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6700813976982027990}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
       insertIndex: -1
@@ -88,6 +122,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7037955667441723243}
   m_SourcePrefab: {fileID: 100100000, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
+--- !u!4 &8160863708332369969 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
+  m_PrefabInstance: {fileID: 8560092955304153050}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8794095078067368587 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
@@ -103,7 +142,7 @@ Animator:
   m_GameObject: {fileID: 8794095078067368587}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
-  m_Controller: {fileID: 9100000, guid: 373f517d18001d34ba532e6efb8673a7, type: 2}
+  m_Controller: {fileID: 9100000, guid: 000df389651d3704cb7c42ba5d6a4135, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -175,8 +214,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3671620023
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 3478025974
+  InScenePlacedSourceGlobalObjectIdHash: 1860286702
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -219,7 +258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
   ShowTopMostFoldoutHeaderGroup: 1
   interactDistance: 1
-  holdPoint: {fileID: 741244977806316256, guid: c7cfed2388cc89743833192ff5adf7b1, type: 3}
+  holdPoint: {fileID: 6700813976982027990}
   pointsPerPizza: 10
   stealCooldown: 1.5
 --- !u!114 &6074354589718617933
