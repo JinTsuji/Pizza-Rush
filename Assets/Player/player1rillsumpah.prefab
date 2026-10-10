@@ -121,6 +121,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7037955667441723243}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -595816585788935317}
   m_SourcePrefab: {fileID: 100100000, guid: 42ef71c885a429e4bba4eb3195784e83, type: 3}
 --- !u!4 &8160863708332369969 stripped
 Transform:
@@ -214,14 +217,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3478025974
+  GlobalObjectIdHash: 1860286702
   InScenePlacedSourceGlobalObjectIdHash: 1860286702
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
-  m_InScenePlaced: 1
+  m_InScenePlaced: 0
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
@@ -353,3 +356,19 @@ MonoBehaviour:
       Synchronize: 1
       ParameterType: 4
   AnimatorParametersExpanded: 0
+--- !u!114 &-595816585788935317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8794095078067368587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1890e3b58bbd3544f88499aa08c1e58c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawnPlacer
+  ShowTopMostFoldoutHeaderGroup: 1
+  gameSceneName: GameScene
+  fallbackPosition: {x: 0, y: 1, z: -3}
+  fallbackSpacing: 2
